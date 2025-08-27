@@ -60,7 +60,7 @@
   document.getElementById('predictBtn').style.display = 'none';
 
   try {
-    const res = await fetch('/predict', { method: 'POST', body: formData });
+    const res = await fetch('https://fashion-mnist-prediction.onrender.com/predict', { method: 'POST', body: formData });
     const data = await res.json();
 
       predictionText.textContent = data.prediction.toUpperCase();
