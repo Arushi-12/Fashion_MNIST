@@ -14,7 +14,7 @@
     </header>
 
     <main>
-      <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
+      <form id="uploadForm" enctype="multipart/form-data">
         <div class="upload-box" id="uploadBox">
           <input type="file" name="file" id="fileInput" accept="image/*" required>
           <label for="fileInput" id="fileLabel">
@@ -23,7 +23,7 @@
           </label>
         </div>
         <button type="submit" class="btn" id="predictBtn">Predict</button>
-      </form>
+    </form>
 
       <div id="result" class="result hidden">
         <h2>Prediction Result</h2>
