@@ -13,8 +13,8 @@
       <p>Upload a clothing image and let AI predict its category.</p>
     </header>
 
-    <main>
-      <form id="uploadForm" enctype="multipart/form-data">
+     <main>
+      <form id="uploadForm" action="/predict" method="post" enctype="multipart/form-data">
         <div class="upload-box" id="uploadBox">
           <input type="file" name="file" id="fileInput" accept="image/*" required>
           <label for="fileInput" id="fileLabel">
@@ -23,11 +23,12 @@
           </label>
         </div>
         <button type="submit" class="btn" id="predictBtn">Predict</button>
-    </form>
+      </form>
 
       <div id="result" class="result hidden">
         <h2>Prediction Result</h2>
         <p id="predictionText"></p>
+        <canvas id="probChart"></canvas>
         <button id="tryAgainBtn" class="btn" style="margin-top:2rem;">Try Another Image</button>
       </div>
     </main>
@@ -60,16 +61,10 @@
 
   try {
     const res = await fetch('/predict', { method: 'POST', body: formData });
-    if (!res.ok) {
-      throw new Error("Server error: " + res.status);
-    }
     const data = await res.json();
 
-    if (data.prediction) {
       predictionText.textContent = data.prediction.toUpperCase();
-    } else {
-      predictionText.textContent = "Error: " + (data.error || "Unknown issue");
-    }
+      resultDiv.classList.remove('hidden');
   } catch (err) {
     predictionText.textContent = "⚠️ Failed to get prediction: " + err.message;
   }
