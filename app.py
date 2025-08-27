@@ -5,8 +5,6 @@ from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
 
-# Load trained CNN model
-cnn_model = load_model("cnn_fashion_model.h5")
 
 # Fashion-MNIST class names
 class_names = ['T-shirt/top','Trouser','Pullover','Dress','Coat',
@@ -23,6 +21,9 @@ def health():
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
+        global cnn_model
+        if cnn_model is None:
+            cnn_model = load_model("cnn_fashion_model.h5")
         print("Received /predict request")
         file = request.files["file"]
         print("File received")
