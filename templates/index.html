@@ -52,18 +52,31 @@
     });
 
     form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData(form);
+  e.preventDefault();
+  const formData = new FormData(form);
 
-      document.getElementById('uploadBox').style.display = 'none';
-      document.getElementById('predictBtn').style.display = 'none';
+  document.getElementById('uploadBox').style.display = 'none';
+  document.getElementById('predictBtn').style.display = 'none';
 
-      const res = await fetch('/predict', { method: 'POST', body: formData });
-      const data = await res.json();
+  try {
+    const res = await fetch('/predict', { method: 'POST', body: formData });
+    if (!res.ok) {
+      throw new Error("Server error: " + res.status);
+    }
+    const data = await res.json();
 
+    if (data.prediction) {
       predictionText.textContent = data.prediction.toUpperCase();
-      resultDiv.classList.remove('hidden');
-    });
+    } else {
+      predictionText.textContent = "Error: " + (data.error || "Unknown issue");
+    }
+  } catch (err) {
+    predictionText.textContent = "⚠️ Failed to get prediction: " + err.message;
+  }
+
+  resultDiv.classList.remove('hidden');
+});
+
 
     const tryAgainBtn = document.getElementById('tryAgainBtn');
     tryAgainBtn.addEventListener('click', function() {
