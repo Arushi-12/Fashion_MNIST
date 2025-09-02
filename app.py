@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template
 import numpy as np
 import cv2
+import os
 from tensorflow.keras.models import load_model
 
 app = Flask(__name__)
@@ -45,4 +46,5 @@ def predict():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # use PORT from Render
+    app.run(host="0.0.0.0", port=port)
