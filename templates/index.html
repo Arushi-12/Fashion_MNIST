@@ -39,6 +39,7 @@
     const resultDiv = document.getElementById('result');
     const predictionText = document.getElementById('predictionText');
     const fileInput = document.getElementById('fileInput');
+    const fileLabel = document.getElementById('fileLabel');
     const fileLabelText = document.getElementById('fileLabelText');
     const fileIcon = document.getElementById('fileIcon');
 
@@ -59,15 +60,27 @@
   document.getElementById('uploadBox').style.display = 'none';
   document.getElementById('predictBtn').style.display = 'none';
 
-  try {
-    const res = await fetch('https://fashion-mnist-prediction.onrender.com/predict', { method: 'POST', body: formData });
-    const data = await res.json();
+  const res = await fetch('/predict', { method: 'POST', body: formData });
+  const data = await res.json();
 
-      predictionText.textContent = data.prediction.toUpperCase();
-      resultDiv.classList.remove('hidden');
-  } catch (err) {
-    predictionText.textContent = "Shirt";
-  }
+  const labels = ['T-shirt/top','Trouser','Pullover','Dress','Coat',
+                      'Sandal','Shirt','Sneaker','Bag','Ankle boot'];
+  const probs = data.probabilities[0];
+
+  const sorted = probs
+        .map((p, i) => ({ label: labels[i], prob: p }))
+        .sort((a, b) => b.prob - a.prob);
+
+      // Show top prediction
+      predictionText.textContent = "Predicted Label: " + sorted[0].label;
+
+      // Show top-3 predictions with probabilities
+      predictionList.innerHTML = "";
+      sorted.slice(0, 3).forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = `${item.label} - ${(item.prob * 100).toFixed(2)}%`;
+        predictionList.appendChild(li);
+      });
 
   resultDiv.classList.remove('hidden');
 });
